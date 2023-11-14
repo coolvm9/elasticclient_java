@@ -1,0 +1,37 @@
+{
+  "took": 0,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 10000,
+      "relation": "gte"
+    },
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "collection",
+        "_id": "DnT3PYsBYUWF9jgZSrgV",
+        "_score": 1,
+        "_source": {
+          "id": 7130104,
+          "text": "This is the definition of RNA along with examples of types of RNA molecules. This is the definition of RNA along with examples of types of RNA molecules. RNA Definition"
+        }
+      },
+      {
+        "_index": "collection",
+        "_id": "D3T3PYsBYUWF9jgZSrgV",
+        "_score": 1,
+        "_source": {
+          "id": 7130335,
+          "text": "Best Answer: The AR designation comes from the name of the company that produced the firearm - Armalite. It is a common misconception that it stands for assault rifle. From Wikipedia: The AR-15 is based on the 7.62mm AR-10, designed by Eugene Stoner of the Fairchild ArmaLite corporation."
+        }
+      }
+    ]
+  }
+}
