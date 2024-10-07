@@ -76,7 +76,7 @@ docker run \
     docker.elastic.co/kibana/kibana:8.12.2
 
 
-## Version 8.12.2
+## Version 8.15.2
 docker run \
     --name elasticsearch \
     --net elastic \
