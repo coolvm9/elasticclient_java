@@ -9,41 +9,140 @@ Create network
 
 % docker network create elastic
 
+## Version 8.9.0
+docker run \
+    --name elasticsearch \
+    --net elastic \
+    -p 9200:9200 \
+    -e discovery.type=single-node \
+    -e ES_JAVA_OPTS="-Xms4g -Xmx4g"\
+    -e xpack.security.enabled=false \
+    -it \
+    docker.elastic.co/elasticsearch/elasticsearch:8.9.0
 
 docker run \
---name elasticsearch \
---net elastic \
--p 9200:9200 \
--e discovery.type=single-node \
--e ES_JAVA_OPTS="-Xms4g -Xmx4g"\
--e xpack.security.enabled=false \
--it \
-docker.elastic.co/elasticsearch/elasticsearch:8.9.0
+    --name kibana \
+    --net elastic \
+    -p 5601:5601 \
+    docker.elastic.co/kibana/kibana:8.9.0
+
+## Version 8.10.2
+docker run \
+    --name elasticsearch \
+    --net elastic \
+    -p 9200:9200 \
+    -e discovery.type=single-node \
+    -e ES_JAVA_OPTS="-Xms4g -Xmx4g"\
+    -e xpack.security.enabled=false \
+    -it \
+    docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+docker run \
+    --name kibana \
+    --net elastic \
+    -p 5601:5601 \
+    docker.elastic.co/kibana/kibana:8.10.2
+
+## Version 8.11.0
+docker run \
+    --name elasticsearch \
+    --net elastic \
+    -p 9200:9200 \
+    -e discovery.type=single-node \
+    -e ES_JAVA_OPTS="-Xms4g -Xmx4g"\
+    -e xpack.security.enabled=false \
+    -it \
+    docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+docker run \
+    --name kibana \
+    --net elastic \
+    -p 5601:5601 \
+    docker.elastic.co/kibana/kibana:8.11.0
+
+
+## Version 8.12.2
+docker run \
+    --name elasticsearch \
+    --net elastic \
+    -p 9200:9200 \
+    -e discovery.type=single-node \
+    -e ES_JAVA_OPTS="-Xms4g -Xmx4g"\
+    -e xpack.security.enabled=false \
+    -it \
+    docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+docker run \
+    --name kibana \
+    --net elastic \
+    -p 5601:5601 \
+    docker.elastic.co/kibana/kibana:8.12.2
+
+
+## Version 8.12.2
+docker run \
+    --name elasticsearch \
+    --net elastic \
+    -p 9200:9200 \
+    -e "discovery.type=single-node" \
+    -e "ES_JAVA_OPTS=-Xms4g -Xmx4g" \
+    -e "xpack.ml.enabled=true" \
+    -e "node.roles=master,data,ml" \
+    -e "xpack.security.enabled=false" \
+    -it \
+    docker.elastic.co/elasticsearch/elasticsearch:8.15.2
+
+
+
 
 docker run \
---name elasticsearch \
---net elastic \
--p 9200:9200 \
--e discovery.type=single-node \
--e ES_JAVA_OPTS="-Xms4g -Xmx4g"\
--e xpack.security.enabled=false \
--it \
-docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    --name kibana \
+    --net elastic \
+    -p 5601:5601 \
+    docker.elastic.co/kibana/kibana:8.15.2
 
+docker run \
+    --name elasticsearch \
+    --net elastic \
+    -p 9200:9200 \
+    -e discovery.type=single-node \
+    -e ES_JAVA_OPTS="-Xms4g -Xmx4g" \
+    -e xpack.ml.enabled=true \   # Enable ML here
+    -e node.roles=ml \           # Set this node to ML role
+    -e xpack.security.enabled=false \
+    -it \
+    docker.elastic.co/elasticsearch/elasticsearch:8.15.2
 
 localhost:9200
+http://localhost:5601/app/dev_tools#/console
 
-docker run \
---name kibana \
---net elastic \
--p 5601:5601 \
-docker.elastic.co/kibana/kibana:8.9.0
+## Deploy eland
+# create a new env in a directory
+mkdir eland
+cd eland
+python3 -m venv eland
+source eland/bin/activate  
+pip3 install --upgrade pip
+python -m pip install 'eland[pytorch]'
+python -m pip install eland
+https://www.elastic.co/guide/en/machine-learning/current/ml-nlp-deploy-model.html
+https://www.elastic.co/guide/en/machine-learning/current/ml-nlp-ner-example.html
+eland_import_hub_model \
+    --url http://localhost:9200/ \
+    --hub-model-id sentence-transformers/msmarco-MiniLM-L-12-v3 \
+    --task-type text_embedding \
+    --start
+eland_import_hub_model \
+    --url http://localhost:9200/ \
+    --hub-model-id elastic/distilbert-base-uncased-finetuned-conll03-english \
+    --task-type ner
+eland_import_hub_model \
+    --url http://localhost:9200/ \
+    --hub-model-id deepset/minilm-uncased-squad2 \
+    --task-type question_answering
 
-docker run \
---name kibana \
---net elastic \
--p 5601:5601 \
-docker.elastic.co/kibana/kibana:8.10.2
+ 
+
+
+
+
 
 # create a new env in a directory
 mkdir eland

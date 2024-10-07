@@ -26,14 +26,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class Main {
-    static Logger logger = Logger.getLogger(Main.class);
-    static String passageUniqueData = "/Users/satyaanumolu/POCs/ElasticClient/src/main/resources/msmarco-passagetest2019-unique.tsv";
+public class App {
+    static Logger logger = Logger.getLogger(App.class);
+    static String passageUniqueData = "/Users/satyaanumolu/POCs/elasticclient_java/src/main/resources/msmarco-passagetest2019-unique.tsv";
     static String passageTop1000Data = "/Users/satyaanumolu/POCs/ElasticClient/src/main/resources/msmarco-passagetest2019-top1000.tsv";
-    static String reIndexCollectionsEmbeddingsJson = "/Users/satyaanumolu/POCs/ElasticClient/src/main/resources/reIndexCollectionsEmbeddings.json";
-    static String reIndexTestDataEmbeddingsJson = "/Users/satyaanumolu/POCs/ElasticClient/src/main/resources/reIndexTestDataEmbeddings.json";
+    static String reIndexCollectionsEmbReqBody = "/Users/satyaanumolu/POCs/elasticclient_java/src/main/resources/reIndexCollectionsEmbeddings.json";
+    static String testData = "/Users/satyaanumolu/POCs/ElasticClient/src/main/resources/reIndexTestDataEmbeddings.json";
     static String reIndexPostUrl = "_reindex?wait_for_completion=false";
-    static String reIndexPostBody = "";
+
+    static String createPipeLineURL = "_ingest/pipeline/text-embeddings";
+    static String jsondata = "";
     static String es_server = "http://localhost:9200";
     static String collectionIndex = "collection";
     static String testDataIndex = "test-data";
@@ -47,15 +49,23 @@ public class Main {
     public static void main(String[] args) throws IOException {
         // load csv file
         try {
+            int statusCode =0;
             initESConnection();
-//            dropCollection();
-            reIndexPostBody = new String(Files.readAllBytes(Paths.get(reIndexTestDataEmbeddingsJson)));
+            dropIndex(collectionIndex);
+            createPipeline(createPipeLineURL,)
+            jsondata = new String(Files.readAllBytes(Paths.get(reIndexCollectionsEmbReqBody)));
+            statusCode = loadDataToIndexAndInfer(passageUniqueData, collectionIndex,reIndexPostUrl, jsondata, true);
+            logger.info(statusCode);
+
+           /*
+
+//            reIndexPostBody = new String(Files.readAllBytes(Paths.get(reIndexTestDataEmbeddingsJson)));
             // Test Data
 //            int statusCode = loadDataToIndexAndInfer(passageTop1000Data, testDataIndex ,reIndexPostUrl, reIndexPostBody, true);
             // Collections Data
-//            reIndexPostBody = new String(Files.readAllBytes(Paths.get(reIndexCollectionsEmbeddingsJson)));
-            int statusCode = loadDataToIndexAndInfer(passageUniqueData, collectionIndex,reIndexPostUrl, reIndexPostBody, true);
-            logger.info(statusCode);
+            jsondata = new String(Files.readAllBytes(Paths.get(reIndexCollectionsEmbeddingsJson)));
+            statusCode = loadDataToIndexAndInfer(passageUniqueData, collectionIndex,reIndexPostUrl, jsondata, true);
+            logger.info(statusCode);*/
         } catch (Exception e) {
             logger.error(e.getMessage());
         } finally {
@@ -66,6 +76,8 @@ public class Main {
             }
         }
     }
+
+
 
     private static int dropIndex(String indexName) throws IOException {
         int statusCode = 0;
@@ -78,6 +90,13 @@ public class Main {
         return statusCode;
     }
 
+
+    private static int createPipeline(String createPipeLineURL, String createPipeLineBody) throws IOException {
+        int statusCode = 0;
+
+            statusCode = requestByGetPost("POST", createPipeLineURL, createPipeLineBody);
+        return statusCode;
+    }
     private static int loadDataToIndexAndInfer(String fileName, String indexName,  String inferPostURL, String inferPostBody, boolean infer) throws IOException {
         int statusCode = 0;
         List<DataElement> list = loadDataToIndex(fileName, '\t');
